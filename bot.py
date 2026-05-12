@@ -1,16 +1,23 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+import os
 import random
 
-TOKEN = "8535830257:AAH_PZpFGFQadYNmn1H017YYX3jYLW9g7gk"
+from telegram import Update
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    ContextTypes
+)
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+TOKEN = os.getenv("8535830257:AAH_PZpFGFQadYNmn1H017YYX3jYLW9g7gk")
 
 messages = [
-    "Уверенный голос влияет сильнее громкости.",
-    "Люди запоминают эмоции, а не слова.",
-    "Пауза перед ответом добавляет вес словам.",
-    "Умение слушать делает тебя интереснее.",
-    "Спокойствие создает ощущение силы."
+    "Спокойствие делает человека убедительнее.",
+    "Люди ценят внимание больше красивых слов.",
+    "Уверенность рождается из практики.",
+    "Пауза перед ответом усиливает эффект слов.",
+    "Тот, кто умеет слушать, всегда интереснее."
 ]
 
 users = set()
@@ -20,7 +27,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     users.add(chat_id)
 
     await update.message.reply_text(
-        "Ежедневные советы активированы 😎"
+        "Ты подписался на ежедневные сообщения 😎"
     )
 
 async def send_daily_messages(app):
@@ -32,27 +39,22 @@ async def send_daily_messages(app):
         except:
             pass
 
-async def main():
-    app = ApplicationBuilder().token(TOKEN).build()
+app = ApplicationBuilder().token(TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("start", start))
 
-    scheduler = AsyncIOScheduler()
+scheduler = AsyncIOScheduler()
 
-    scheduler.add_job(
-        send_daily_messages,
-        "cron",
-        hour=12,
-        minute=0,
-        args=[app]
-    )
+scheduler.add_job(
+    send_daily_messages,
+    "cron",
+    hour=12,
+    minute=0,
+    args=[app]
+)
 
-    scheduler.start()
+scheduler.start()
 
-    print("Бот работает")
+print("Бот работает")
 
-    await app.run_polling()
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+app.run_polling()
