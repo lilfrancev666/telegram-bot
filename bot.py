@@ -1,14 +1,11 @@
 import os
 import random
-
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
-    ContextTypes
+    ContextTypes,
 )
-
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 TOKEN = os.getenv("TOKEN")
 
@@ -30,12 +27,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Ты подписался на ежедневные сообщения 😎"
     )
 
-async def send_daily_messages(app):
+async def daily_message(context: ContextTypes.DEFAULT_TYPE):
     for user in users:
         text = random.choice(messages)
 
         try:
-            await app.bot.send_message(chat_id=user, text=text)
+            await context.bot.send_message(
+                chat_id=user,
+                text=text
+            )
         except:
             pass
 
@@ -43,17 +43,13 @@ app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
 
-scheduler = AsyncIOScheduler()
+job_queue = app.job_queue
 
-scheduler.add_job(
-    send_daily_messages,
-    "cron",
-    hour=12,
-    minute=0,
-    args=[app]
+# Каждый день в 12:00
+job_queue.run_daily(
+    daily_message,
+    time={"hour": 12, "minute": 0}
 )
-
-scheduler.start()
 
 print("Бот работает")
 
