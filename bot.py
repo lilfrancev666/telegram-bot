@@ -10,7 +10,7 @@ from telegram.ext import (
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-TOKEN = os.getenv(AAH_PZpFGFQadYNmn1H017YYX3jYLW9g7gk")
+TOKEN = os.getenv("TOKEN")
 
 messages = [
     "Спокойствие делает человека убедительнее.",
