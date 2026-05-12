@@ -49,7 +49,7 @@ job_queue = app.job_queue
 
 job_queue.run_daily(
     daily_message,
-    time=time(hour=04, minute=18)
+    time=time(hour=4, minute=20)
 )
 
 print("Бот работает")
