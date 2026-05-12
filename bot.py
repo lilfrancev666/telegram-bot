@@ -1,5 +1,7 @@
 import os
 import random
+from datetime import time
+
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -45,10 +47,9 @@ app.add_handler(CommandHandler("start", start))
 
 job_queue = app.job_queue
 
-# Каждый день в 12:00
 job_queue.run_daily(
     daily_message,
-    time={"hour": 12, "minute": 0}
+    time=time(hour=12, minute=0)
 )
 
 print("Бот работает")
